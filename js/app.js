@@ -103,15 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return slice;
   };
 
-  // 일차별 퀴즈 어휘 (오늘 6단어 + 이전 복습 2단어 = 총 8문제)
+  // 일차별 퀴즈 어휘 (오늘 학습한 6단어 기준 6문제)
   const getDayQuizVocab = (day) => {
-    const todayWords = getDayVocab(day);
-    if (day > 1) {
-      const prevPool = allVocab.slice(0, (day - 1) * WORDS_PER_DAY);
-      const reviewWords = prevPool.slice(0, 2);
-      return [...todayWords, ...reviewWords];
-    }
-    return allVocab.slice(0, Math.min(8, allVocab.length));
+    return getDayVocab(day);
   };
 
   // ChineseSpeech 자동재생 상태 동기화
@@ -1228,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---------------------------------------------------------------------------
-  // 11. 5단계: 실전 기출 퀴즈 (🎯 8문항 빈칸 채우기)
+  // 11. 5단계: 실전 기출 퀴즈 (🎯 6문항 빈칸 채우기)
   // ---------------------------------------------------------------------------
   let quizQuestions = [];
   let quizIndex = 0;
