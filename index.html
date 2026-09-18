@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>26초 · HSK 5급 일러스트 단어장 (26초 시나리오 100% 구현)</title>
+  
+  <!-- Fonts: Pretendard, Noto Sans SC, Noto Serif SC, Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-font-size="large" data-font-family="sans">
+
+  <!-- 글로벌 탑 헤더 (데스크탑 네비게이션 & 시나리오 직접 이동) -->
+  <header class="global-header">
+    <div class="global-header-inner">
+      <div class="brand">
+        <div class="brand-badge">26</div>
+        <div>
+          <div class="brand-title">초고속 연상암기 · 新HSK 5급 단어장</div>
+          <div class="brand-sub">1강 가정, 일상생활 (001~011) · 파자 연상 비법 &amp; 음성 자동재생</div>
+        </div>
+      </div>
+
+      <!-- 26초 학습 단계별 빠른 전환 탭 -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-screen="home">
+          <span>🏠</span> 홈
+        </button>
+        <button class="nav-tab-btn" data-screen="skim">
+          <span>⚡</span> 1. 스키밍
+        </button>
+        <button class="nav-tab-btn" data-screen="flashcard">
+          <span>🃏</span> 2. 플래시카드
+        </button>
+        <button class="nav-tab-btn" data-screen="result">
+          <span>📊</span> 3. 학습 결과
+        </button>
+        <button class="nav-tab-btn" data-screen="listening">
+          <span>🎧</span> 4. 듣기 모드
+        </button>
+        <button class="nav-tab-btn" data-screen="quiz">
+          <span>🎯</span> 5. 기출 퀴즈
+        </button>
+        <button class="nav-tab-btn" data-screen="list">
+          <span>📚</span> 전체 도감
+        </button>
+      </nav>
+
+      <!-- 상단 도구 (음성 자동재생 토글 & 가독성) -->
+      <div class="header-tools">
+        <button class="tool-btn active" id="toggleAutoPlayBtn" title="단어장 음성 자동재생 켜기/끄기">
+          <span id="autoPlayIcon">🔊</span> 음성 자동재생: ON
+        </button>
+        <button class="tool-btn active" id="toggleMizigeBtn" title="한자 쓰기 격자선(米字格) 켜기/끄기">
+          <span>田</span> 米字格
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 토스트 알림 팝업 -->
+  <div class="toast-popup" id="toastPopup">알림 메시지</div>
+
+  <main class="main-content">
+    <div class="phone-mockup-wrapper">
+      <div class="galaxy-frame">
+
+        <!-- 상단 안드로이드 / 갤럭시 상태바 (동영상 그대로 재현) -->
+        <div class="phone-status-bar">
+          <span class="status-carrier">SKT 4:01</span>
+          <div class="status-icons">
+            <span class="status-dot"></span>
+            <svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><path d="M1 9.5h2v-2H1v2zm3.5 0h2v-4h-2v4zm3.5 0h2v-6h-2v6zm3.5 0h2V1h-2v8.5z"/></svg>
+            <svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><path d="M7 2.5C4.5 2.5 2.2 3.5.5 5.2l6.5 8 6.5-8C11.8 3.5 9.5 2.5 7 2.5z"/></svg>
+            <span class="battery-text">91</span>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             1. 홈 화면 (Home Screen)
+             ======================================================== -->
+        <div class="screen-view active" id="homeView">
+          <!-- 홈 상단 바 -->
+          <div class="screen-top-bar">
+            <div class="home-course-selector">
+              <span class="course-name">1강 가정, 일상생활</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <button class="home-goal-btn" id="openGoalBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              목표 설정
+            </button>
+          </div>
+
+          <!-- 주간 연속 학습 달력 바 (실제 오늘 날짜 연동) -->
+          <div class="home-week-bar">
+            <div class="week-days-row" id="weekDaysRow">
+              <!-- JS에서 실제 오늘 날짜와 실시간 연동하여 요일 및 날짜를 생성해요 -->
+            </div>
+          </div>
+
+          <!-- 홈 스크롤 콘텐츠 -->
+          <div class="home-content-scroll">
+            <div class="day-section-header">
+              <div class="day-section-title-wrap">
+                <div class="day-section-title" id="daySectionTitle">
+                  <span id="dayHeaderTitle">Day 1</span>
+                  <span class="today-tag" id="todayStatusTag">오늘의 학습</span>
+                </div>
+                <div class="day-sub-info" id="daySubInfo">9월 18일 (금) · 1강 가정, 일상생활 (001~006번)</div>
+              </div>
+            </div>
+
+            <!-- Day 1 태스크 1: 스키밍 카드 -->
+            <div class="home-task-card" id="homeTaskSkim">
+              <div class="task-thumb-bg">
+                <img src="images/mianlin.jpg" alt="스키밍" />
+                <div class="task-overlay-tag">⚡ 초고속 뇌 각인</div>
+              </div>
+              <div class="task-info">
+                <div class="task-title">1단계: 스키밍 (눈에 익히기)</div>
+                <div class="task-desc">빠른 템포로 웹툰 일러스트와 예문을 훑어보며 직관적으로 기억해요.</div>
+                <button class="task-action-btn btn-primary" id="btnStartSkimFromHome">
+                  스키밍 시작하기
+                </button>
+              </div>
+            </div>
+
+            <!-- Day 1 태스크 2: 플래시카드 암기 -->
+            <div class="home-task-card" id="homeTaskFlash">
+              <div class="task-thumb-bg">
+                <img src="images/youyu.jpg" alt="플래시카드" />
+                <div class="task-overlay-tag">🃏 본격 암기 &amp; SRS</div>
+              </div>
+              <div class="task-info">
+                <div class="task-title">2단계: 플래시카드 암기</div>
+                <div class="task-desc">한자만 보고 뜻을 연상한 뒤, 3단계(몰랐어요/헷갈려요/맞혔어요)로 훈련해요.</div>
+                <button class="task-action-btn" id="btnStartFlashFromHome">
+                  플래시카드 시작
+                </button>
+              </div>
+            </div>
+
+            <!-- Day 1 태스크 3: 실전 기출 퀴즈 -->
+            <div class="home-task-card" id="homeTaskQuiz">
+              <div class="task-thumb-bg" style="background: #18181B;">
+                <img src="images/huangzhang.jpg" alt="퀴즈" />
+                <div class="task-overlay-tag">🎯 빈칸 채우기 기출 퀴즈</div>
+              </div>
+              <div class="task-info">
+                <div class="task-title">3단계: 실전 퀴즈 풀기</div>
+                <div class="task-desc">빈칸에 알맞은 HSK 5급 단어를 고르며 실전 문제 풀이력을 확인해요.</div>
+                <button class="task-action-btn" id="btnStartQuizFromHome">
+                  바로 시작
+                </button>
+              </div>
+            </div>
+
+            <!-- Day 1 태스크 4: 듣기 모드 플레이어 -->
+            <div class="home-task-card" id="homeTaskListen">
+              <div class="task-thumb-bg">
+                <img src="images/huanjie.jpg" alt="듣기 모드" />
+                <div class="task-overlay-tag">🎧 연속 자동재생 플레이어</div>
+              </div>
+              <div class="task-info">
+                <div class="task-title">4단계: 음성 듣기 모드 복습</div>
+                <div class="task-desc">중국어 단어 ➔ 한국어 뜻 ➔ 기출 예문이 멈추지 않고 흘러나와요.</div>
+                <button class="task-action-btn" id="btnStartListenFromHome">
+                  듣기 모드 재생
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 하단 네비게이션 탭바 (홈, 라이브러리, 분석, 멤버십) -->
+          <div class="phone-bottom-nav">
+            <button class="bottom-tab-item active" data-screen="home">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+              <span>홈</span>
+            </button>
+            <button class="bottom-tab-item" data-screen="list">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              <span>도감</span>
+            </button>
+            <button class="bottom-tab-item" data-screen="result">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span>분석</span>
+            </button>
+            <button class="bottom-tab-item" id="btnShowStreak">
+              <span style="font-size:16px;">🔥</span>
+              <span>연속</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             2. 스키밍 화면 (Skimming View)
+             ======================================================== -->
+        <div class="screen-view" id="skimView">
+          <!-- 스키밍 인트로 인터스티셜 (자, 심호흡 해보실까요) -->
+          <div class="interstitial-screen active" id="skimIntroScreen">
+            <div class="pulsing-ring-wrap">
+              <div class="pulsing-ring ring-1"></div>
+              <div class="pulsing-ring ring-2"></div>
+              <div class="pulsing-center-dot"></div>
+            </div>
+            <h2 class="interstitial-title">자, 심호흡 해보실까요</h2>
+            <p class="interstitial-sub">스키밍은 빠른 템포로 사진과 예문을 속도감있게 보며, 눈에 익힌다는 느낌으로.</p>
+            <button class="interstitial-start-btn" id="btnBeginSkimmingCards">
+              준비 완료, 시작하기
+            </button>
+          </div>
+
+          <!-- 스키밍 메인 카드 뷰 -->
+          <div class="active-learning-wrap" id="skimCardsWrap" style="display:none;">
+            <!-- 상단 바 (<, 🗑️ 알고있어요 수, ✓ 진행도, ...) -->
+            <div class="screen-top-bar">
+              <button class="bar-icon-btn" id="btnExitSkim">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <div class="top-status-counters">
+                <span class="counter-badge trash-count">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span id="skimTrashCount">0</span>
+                </span>
+                <span class="counter-badge progress-count">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.8"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span id="skimProgressCount">0 / 6</span>
+                </span>
+              </div>
+              <button class="bar-icon-btn" id="btnSkimMore">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="18" r="1.8"/></svg>
+              </button>
+            </div>
+
+            <!-- 스키밍 플래시카드 컨테이너 -->
+            <div class="card-viewport">
+              <div class="skimmify-card" id="skimCurrentCard">
+                <!-- JS에서 실시간 렌더링 -->
+              </div>
+            </div>
+
+            <!-- 스키밍 하단 액션 버튼 ([알고 있어요] vs [학습할게요]) -->
+            <div class="skim-bottom-actions">
+              <button class="action-btn-pill btn-white" id="btnSkimKnow">
+                알고 있어요
+              </button>
+              <button class="action-btn-pill btn-black" id="btnSkimLearn">
+                학습할게요
+              </button>
+            </div>
+          </div>
+
+
+
+          <!-- 스키밍 완료 인터스티셜 (크으, 스키밍 완료) -->
+          <div class="interstitial-screen" id="skimFinishScreen" style="display:none;">
+            <div class="pulsing-ring-wrap">
+              <div class="pulsing-ring ring-1" style="border-color:#10B981;"></div>
+              <div class="pulsing-center-dot" style="background:#10B981;"></div>
+            </div>
+            <h2 class="interstitial-title">크으, 스키밍 완료</h2>
+            <p class="interstitial-sub">바로 씹어 삼킨 단어를 플래시카드로 소화하러 가봅시다.</p>
+            <button class="interstitial-start-btn" id="btnGoToFlashcardFromSkim">
+              플래시카드 시작
+            </button>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             3. 플래시카드 화면 (Flashcard SRS View)
+             ======================================================== -->
+        <div class="screen-view" id="flashcardView">
+          <!-- 플래시카드 인트로 (본격적으로 외워볼까요?) -->
+          <div class="interstitial-screen active" id="flashIntroScreen">
+            <div class="pulsing-ring-wrap">
+              <div class="pulsing-ring ring-1"></div>
+              <div class="pulsing-center-dot"></div>
+            </div>
+            <h2 class="interstitial-title">본격적으로 외워볼까요?</h2>
+            <p class="interstitial-sub">심호흡을 하세요. 은근 암기에 도움이 됩니다.</p>
+            <button class="interstitial-start-btn" id="btnBeginFlashcard">
+              암기 시작하기
+            </button>
+          </div>
+
+          <!-- 플래시카드 본 훈련 영역 -->
+          <div class="active-learning-wrap" id="flashcardTrainingWrap" style="display:none;">
+            <!-- 상단 바 (<, 세그먼트 진행바, 1 / 6, ...) -->
+            <div class="screen-top-bar">
+              <button class="bar-icon-btn" id="btnExitFlash">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <div class="top-flash-progress">
+                <span id="flashProgressText">1 / 6</span>
+                <div class="segmented-track" id="flashSegmentedTrack"></div>
+              </div>
+              <button class="bar-icon-btn" id="btnFlashMore">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="18" r="1.8"/></svg>
+              </button>
+            </div>
+
+            <!-- 플래시카드 뷰포트 (앞면: 문제 / 뒷면: 정답) -->
+            <div class="card-viewport">
+              <div class="skimmify-card flash-interactive-card" id="flashInteractiveCard">
+                <!-- JS 렌더링 -->
+              </div>
+            </div>
+
+            <!-- 플래시카드 하단 컨트롤 바 -->
+            <div class="flash-bottom-controls" id="flashBottomControls">
+              <!-- 앞면일 때: [ 뒷면 보기 ] -->
+              <button class="flash-show-back-btn" id="btnShowBack">
+                뒷면 보기
+              </button>
+
+              <!-- 뒷면일 때: 3단 SRS 버튼 (빨강 / 검정 / 초록) -->
+              <div class="srs-rating-buttons" id="srsButtonsWrap" style="display:none;">
+                <button class="srs-btn srs-hard" id="btnSrsHard">
+                  <span class="srs-main-text">몰랐어요</span>
+                  <span class="srs-sub-text">잠시 후</span>
+                </button>
+                <button class="srs-btn srs-medium" id="btnSrsMedium">
+                  <span class="srs-main-text">헷갈려요</span>
+                  <span class="srs-sub-text">1시간 후</span>
+                </button>
+                <button class="srs-btn srs-easy" id="btnSrsEasy">
+                  <span class="srs-main-text">맞혔어요</span>
+                  <span class="srs-sub-text">1일 후</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             4. 학습 결과 화면 (Flashcard Result Screen)
+             ======================================================== -->
+        <div class="screen-view" id="resultView">
+          <div class="result-scroll-content">
+            <h2 class="result-page-title">플래시카드 결과</h2>
+
+            <!-- 4대 통계 지표 그리드 -->
+            <div class="result-stats-grid">
+              <div class="stat-box">
+                <div class="stat-value" id="resReviewCount">10</div>
+                <div class="stat-label">복습 횟수</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value highlight" id="resAccuracy">80%</div>
+                <div class="stat-label">암기율</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value" id="resTotalTime">1:15</div>
+                <div class="stat-label">총 소요시간</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-value" id="resSpeedPerCard">7.5초</div>
+                <div class="stat-label">단어당 소요시간</div>
+              </div>
+            </div>
+
+            <!-- 대형 복습하기 버튼 -->
+            <button class="result-review-main-btn" id="btnOpenReviewModal">
+              복습하기
+            </button>
+
+            <!-- 단어/뜻 가리기 토글 툴바 -->
+            <div class="result-mask-toolbar">
+              <span class="mask-guide-text">상태별 복습 목록</span>
+              <div class="mask-buttons">
+                <button class="mask-toggle-btn" id="toggleMaskHanzi">단어 가리기</button>
+                <button class="mask-toggle-btn" id="toggleMaskMeaning">뜻 가리기</button>
+              </div>
+            </div>
+
+            <!-- 그룹별 상세 단어 리스트 -->
+            <div class="result-grouped-list" id="resultGroupedList">
+              <!-- JS에서 생성 -->
+            </div>
+
+            <div class="result-footer-actions">
+              <button class="result-btn-listen" id="btnGoToListeningFromResult">
+                🎧 듣기 모드로 계속 복습
+              </button>
+              <button class="result-btn-quiz" id="btnGoToQuizFromResult">
+                🎯 실전 퀴즈 풀러 가기
+              </button>
+              <button class="result-btn-done" id="btnFinishLearning">
+                학습 마치기
+              </button>
+            </div>
+          </div>
+
+          <!-- 복습 설정 모달 바텀시트 -->
+          <div class="modal-bottom-sheet" id="reviewSettingsModal">
+            <div class="sheet-content">
+              <div class="sheet-header">
+                <h3>복습 설정</h3>
+                <button class="sheet-close-btn" id="btnCloseReviewModal">&times;</button>
+              </div>
+              <div class="sheet-options-list">
+                <label class="sheet-option-item">
+                  <input type="radio" name="reviewMode" value="flashcard" checked>
+                  <div>
+                    <div class="opt-name">플래시카드 모드</div>
+                    <div class="opt-desc">카드를 뒤집으며 3단계로 다시 암기해요.</div>
+                  </div>
+                </label>
+                <label class="sheet-option-item">
+                  <input type="radio" name="reviewMode" value="listening">
+                  <div>
+                    <div class="opt-name">듣기 모드</div>
+                    <div class="opt-desc">음성을 편안하게 들으며 귀로 복습해요.</div>
+                  </div>
+                </label>
+              </div>
+              <button class="sheet-confirm-btn" id="btnConfirmReviewSettings">
+                복습 시작하기
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             5. 듣기 모드 화면 (Listening Audio Player)
+             ======================================================== -->
+        <div class="screen-view" id="listeningView">
+          <!-- 듣기 모드 인트로 (학습의 완성은, 복습, 또 복습) -->
+          <div class="interstitial-screen active" id="listenIntroScreen">
+            <div class="pulsing-ring-wrap">
+              <div class="pulsing-ring ring-1"></div>
+              <div class="pulsing-center-dot"></div>
+            </div>
+            <h2 class="interstitial-title">학습의 완성은, 복습, 또 복습</h2>
+            <p class="interstitial-sub">음성을 듣고 단어를 떠올려보세요.</p>
+            <button class="interstitial-start-btn" id="btnBeginListening">
+              음성 재생 시작
+            </button>
+          </div>
+
+          <!-- 듣기 모드 메인 플레이어 뷰 -->
+          <div class="active-learning-wrap" id="listenPlayerWrap" style="display:none;">
+            <!-- 상단 바 -->
+            <div class="screen-top-bar">
+              <button class="bar-icon-btn" id="btnExitListening">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <div class="top-flash-progress">
+                <span id="listenCounterText">1 / 6</span>
+              </div>
+              <button class="bar-icon-btn" id="btnListenMore">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="18" r="1.8"/></svg>
+              </button>
+            </div>
+
+            <!-- 듣기 모드 카드 -->
+            <div class="card-viewport">
+              <div class="skimmify-card" id="listenCardContent">
+                <!-- JS 렌더링 -->
+              </div>
+            </div>
+
+            <!-- 하단 뮤직 플레이어 컨트롤 바 (셔플, 이전, 재생/일시정지, 다음, 루프) -->
+            <div class="media-player-bar">
+              <button class="player-btn" id="btnPlayerShuffle" title="랜덤 셔플">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+              </button>
+              <button class="player-btn" id="btnPlayerPrev" title="이전 단어">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"></line></svg>
+              </button>
+              <button class="player-play-btn" id="btnPlayerPlayPause" title="재생 / 일시정지">
+                <svg id="playPauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              </button>
+              <button class="player-btn" id="btnPlayerNext" title="다음 단어">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"></line></svg>
+              </button>
+              <button class="player-btn active" id="btnPlayerRepeat" title="연속 반복 재생">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             6. 실전 기출 퀴즈 화면 (Blank Quiz Screen)
+             ======================================================== -->
+        <div class="screen-view" id="quizView">
+          <!-- 퀴즈 인트로 (찍지 말고 찢으세요) -->
+          <div class="interstitial-screen active" id="quizIntroScreen">
+            <div class="pulsing-ring-wrap">
+              <div class="pulsing-ring ring-1"></div>
+              <div class="pulsing-center-dot"></div>
+            </div>
+            <h2 class="interstitial-title">찍지 말고 찢으세요</h2>
+            <p class="interstitial-sub">퀴즈를 푸는 데에 너무 오래 걸린다면, 수련이 부족한 탓입니다.</p>
+            <button class="interstitial-start-btn" id="btnBeginQuiz">
+              실전 퀴즈 시작
+            </button>
+          </div>
+
+          <!-- 퀴즈 문제 풀이 영역 -->
+          <div class="active-learning-wrap" id="quizSolvingWrap" style="display:none;">
+            <!-- 상단 바 (<, 문항 번호, 타이머) -->
+            <div class="screen-top-bar">
+              <button class="bar-icon-btn" id="btnExitQuiz">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <span class="quiz-item-counter" id="quizItemCounter">1 / 8</span>
+              <div class="quiz-timer-pill" id="quizTimerPill">
+                00:00
+              </div>
+            </div>
+
+            <!-- 문제 내용 카드 -->
+            <div class="quiz-interactive-body">
+              <div class="quiz-instruction-text">빈칸에 들어갈 단어를 선택하세요.</div>
+              
+              <div class="quiz-target-meaning" id="quizTargetMeaning">
+                직면하다
+              </div>
+
+              <div class="quiz-sentence-box" id="quizSentenceBox">
+                企业在发展中______着巨大的挑战。
+              </div>
+
+              <!-- 4지 선다 선택지 (A, B, C, D) -->
+              <div class="quiz-options-grid" id="quizOptionsGrid">
+                <!-- JS 생성 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 퀴즈 완료 결과 화면 -->
+          <div class="quiz-result-view" id="quizResultView" style="display:none;">
+            <div class="result-scroll-content">
+              <h2 class="result-page-title">퀴즈 결과</h2>
+
+              <div class="quiz-result-summary-grid">
+                <div class="stat-box">
+                  <div class="stat-value highlight" id="quizFinalAccuracy">75%</div>
+                  <div class="stat-label">정답률</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-value" id="quizSolvedCount">8</div>
+                  <div class="stat-label">푼 문제</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-value" id="quizTotalDuration">0:22</div>
+                  <div class="stat-label">총 소요시간</div>
+                </div>
+              </div>
+
+              <div class="quiz-score-badge-row">
+                <span class="badge-tag tag-wrong" id="quizWrongBadge">❌ 오답 2</span>
+                <span class="badge-tag tag-correct" id="quizCorrectBadge">✅ 정답 6</span>
+              </div>
+
+              <!-- 풀이 리뷰 목록 -->
+              <div class="quiz-review-items" id="quizReviewItems">
+                <!-- JS 렌더링 -->
+              </div>
+
+              <button class="result-review-main-btn" id="btnFinishQuizToHome" style="margin-top:20px;">
+                학습 마치기
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             7. 전체 도감 및 검색 화면 (Vocabulary Library)
+             ======================================================== -->
+        <div class="screen-view" id="listView">
+          <div class="screen-top-bar">
+            <button class="bar-icon-btn" id="btnExitList">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span style="font-size:15px; font-weight:800;">HSK 5급 공식 어휘 도감</span>
+            <div style="width:28px;"></div>
+          </div>
+
+          <div class="list-container">
+            <input type="text" class="search-box" id="listSearchInput" placeholder="한자, 병음, 한국어 뜻, 搭配 검색 (예: 面临, miànlín, 직면)">
+            <div class="filter-chips">
+              <button class="filter-chip active" data-filter="all">전체 어휘</button>
+              <button class="filter-chip" data-filter="starred">🔖 북마크 단어</button>
+              <button class="filter-chip" data-filter="unlearned">학습 중 단어</button>
+              <button class="filter-chip" data-filter="learned">외운 단어함</button>
+            </div>
+
+            <div class="vocab-cards-grid" id="vocabCardsGrid"></div>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             8. 연속 학습 축하 모달 (Streak & Confetti)
+             ======================================================== -->
+        <div class="celebration-overlay" id="streakModal">
+          <div class="streak-celebration-card">
+            <div class="streak-fire-icon">🔥</div>
+            <h2 class="streak-days-title">1일 연속 학습</h2>
+            <p class="streak-sub">노력이 차곡차곡 쌓이고 있어요.</p>
+
+            <div class="streak-week-circles">
+              <div class="streak-circle active">목</div>
+              <div class="streak-circle">금</div>
+              <div class="streak-circle">토</div>
+              <div class="streak-circle">일</div>
+              <div class="streak-circle">월</div>
+              <div class="streak-circle">화</div>
+              <div class="streak-circle">수</div>
+            </div>
+
+            <div class="streak-card-alert">
+              <div class="alert-tag">🎉 오늘 학습 완료!</div>
+              <div class="alert-text">오늘 분량의 어휘를 모두 마스터했어요! 내일 새로운 학습이 자동으로 생성돼요.</div>
+            </div>
+
+            <button class="celebration-btn" id="btnCloseStreak" style="background:#111827; color:#FFFFFF; margin-top:12px;">
+              확인 (홈으로 가기)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- 자바스크립트 모듈 로드 -->
+  <script src="js/data.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+

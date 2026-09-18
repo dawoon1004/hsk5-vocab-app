@@ -1,0 +1,8 @@
+# Book scans (raw source images)
+book_scans/
+
+# Temporary / OS files
+*.log
+*.ps1
+Thumbs.db
+.DS_Store
